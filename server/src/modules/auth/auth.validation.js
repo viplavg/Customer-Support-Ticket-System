@@ -40,3 +40,25 @@ export const loginValidator = () => {
     ,
   ];
 };
+
+export const changePasswordValidator = () => {
+  return [
+    body("currentPassword")
+    .notEmpty()
+    .withMessage("Current Password is required"),
+
+    body("newPassword")
+    .notEmpty()
+    .withMessage("New passaword is required")
+    .isLength({min : 6})
+    .withMessage("New password must be at least 6 characters long")
+    .custom((value, {req})=>{
+      if(value === req.body.currentPassword) {
+        throw new Error(
+          "New password must be different from current password"
+        );
+      }
+      return true;
+    }),
+  ];
+};

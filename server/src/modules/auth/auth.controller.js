@@ -91,36 +91,68 @@ export const loginUser = async (req, res) => {
 };
 
 export const getProfile = async (req, res) => {
-    try {
-        const {id} = req.user;
+  try {
+    const { id } = req.user;
 
-        const user = await User.findById(id);
+    const user = await User.findById(id);
 
-        if(!user) {
-            return res.status(404).json({
-                success: false,
-                message: "User does not exist"
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            message: "User details fetched successfully",
-            data: {
-                user: {
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    role: user.role
-                }
-            }
-        });
-
-    } catch (error) {
-        console.error("Error fetching user details", error.message);
-        return res.status(500).json({
-            success: false,
-            message: "Internal Server Error"
-        })
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User does not exist",
+      });
     }
-}
+
+    return res.status(200).json({
+      success: true,
+      message: "User details fetched successfully",
+      data: {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching user details", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const { id } = req.user;
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    const checkPassword = await user.comparePassword(currentPassword);
+    if (!checkPassword) {
+      return res.status(401).json({
+        success: false,
+        message: "Incorrect Password",
+      });
+    }
+    user.password = newPassword;
+    await user.save();
+    return res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    console.error("Error changing in Password", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};

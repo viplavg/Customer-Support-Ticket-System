@@ -1,7 +1,7 @@
 import { asyncHandler } from "../../middlewares/asyncHandler.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 import { createTicket as createTicketService } from "./ticket.service.js";
-
+import { getTickets as getTicketsService } from "./ticket.service.js";
 
 export const createTicket = asyncHandler(async (req, res) => {
     const {title, description, priority, category} = req.body;
@@ -11,5 +11,13 @@ export const createTicket = asyncHandler(async (req, res) => {
     });
     return res.status(201).json(
         new ApiResponse(ticket, "Ticket created successfully")
+    )
+});
+
+export const getTickets = asyncHandler(async (req, res) => {
+    const { id: userId, role } = req.user;
+    const tickets = await getTicketsService({userId, role});
+    return res.status(200).json(
+        new ApiResponse(tickets, "Tickets fetched successfully")
     )
 });

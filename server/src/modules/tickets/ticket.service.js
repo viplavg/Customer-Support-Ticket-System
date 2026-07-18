@@ -25,3 +25,14 @@ export const createTicket = async ({title, description, priority, category, crea
     });
     return ticket;
 }
+
+export const getTickets = async({userId, role}) => {
+  let query = {};
+  if(role === "CUSTOMER") {
+    query.createdBy = userId;
+  } else if(role === "AGENT") {
+    query.assignedTo = userId;
+  }
+  const tickets = await Ticket.find(query);
+  return tickets;
+}

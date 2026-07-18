@@ -1,5 +1,5 @@
 import Counter from "./counter.model.js";
-import Ticket from "./ticket.model";
+import Ticket from "./ticket.model.js";
 
 export const getNextTicketNumber = async () => {
   const counter = await Counter.findOneAndUpdate(

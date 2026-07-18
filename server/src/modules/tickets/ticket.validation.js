@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import { PRIORITIES, CATEGORIES } from "./ticket.constants";
+import { PRIORITIES, CATEGORIES } from "./ticket.constants.js";
 
 export const validateCreateTicket = [
     body("title")

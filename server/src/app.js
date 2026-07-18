@@ -24,7 +24,7 @@ app.get("/health", (req, res) => {
 })
 
 app.use("/api/v1/auth", authRoutes);
-app.use("api/v1/tickets", ticketRoutes);
+app.use("/api/v1/tickets", ticketRoutes);
 
 app.use(errorHandler);
 

@@ -7,3 +7,5 @@ export const CATEGORIES = [
     "FEATURE_REQUEST",
     "GENERAL",
 ];
+
+export const ACCESS_DENIED = "You are not authorized to view this ticket";

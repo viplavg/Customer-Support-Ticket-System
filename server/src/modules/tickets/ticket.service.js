@@ -1,5 +1,7 @@
 import Counter from "./counter.model.js";
 import Ticket from "./ticket.model.js";
+import {ApiError} from "../../utils/ApiError.js";
+import { ACCESS_DENIED } from "./ticket.constants.js";
 
 export const getNextTicketNumber = async () => {
   const counter = await Counter.findOneAndUpdate(
@@ -35,4 +37,26 @@ export const getTickets = async({userId, role}) => {
   }
   const tickets = await Ticket.find(query);
   return tickets;
+}
+
+export const getTicketById = async ({ticketId, userId, role}) => {
+    const ticket = await Ticket.findById(ticketId);
+
+    if(!ticket) {
+      throw new ApiError(404, "Ticket not found");
+    }
+
+    if(role === "ADMIN"){
+      return ticket;
+    }
+
+    if(role === "CUSTOMER" && !ticket.createdBy.equals(userId)){
+      throw new ApiError(403, ACCESS_DENIED);
+    }
+
+    if(role === "AGENT" && !ticket.assignedTo?.equals(userId)) {
+      throw new ApiError(403, ACCESS_DENIED);
+    }
+
+    return ticket;
 }

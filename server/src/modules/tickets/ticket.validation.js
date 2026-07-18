@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { PRIORITIES, CATEGORIES } from "./ticket.constants.js";
 
 export const validateCreateTicket = [
@@ -20,4 +20,11 @@ export const validateCreateTicket = [
     .withMessage("Category is required")
     .isIn(CATEGORIES)
     .withMessage("Invalid category")
+];
+
+
+export const validateTicketId = [
+    param("id")
+    .isMongoId()
+    .withMessage("Invalid Ticket Id")
 ];

@@ -2,6 +2,7 @@ import { asyncHandler } from "../../middlewares/asyncHandler.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 import { createTicket as createTicketService } from "./ticket.service.js";
 import { getTickets as getTicketsService } from "./ticket.service.js";
+import { getTicketById as getTicketByIdService } from "./ticket.service.js";
 
 export const createTicket = asyncHandler(async (req, res) => {
     const {title, description, priority, category} = req.body;
@@ -19,5 +20,18 @@ export const getTickets = asyncHandler(async (req, res) => {
     const tickets = await getTicketsService({userId, role});
     return res.status(200).json(
         new ApiResponse(tickets, "Tickets fetched successfully")
+    )
+});
+
+export const getTicketById = asyncHandler(async (req, res) => {
+    const {id: ticketId} = req.params;
+    const {id: userId, role} = req.user;
+
+    const ticket = await getTicketByIdService({
+        ticketId, userId, role 
+    });
+
+    return res.status(200).json(
+        new ApiResponse(ticket, "Ticket fetched successfully")
     )
 });

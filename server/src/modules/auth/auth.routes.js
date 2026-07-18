@@ -1,5 +1,5 @@
 import express from "express";
-import { registerUser, loginUser, getProfile, changePassword } from "./auth.controller.js";
+import { registerUser, loginUser, getProfile, changePassword, logoutUser } from "./auth.controller.js";
 import { authenticateUser, authorizeRoles } from "../../middlewares/auth.middleware.js";
 import { changePasswordValidator, loginValidator, registerValidator } from "./auth.validation.js";
 import { validateRequest } from "../../middlewares/validateRequest.js";
@@ -46,5 +46,10 @@ router.patch(
     changePassword
 )
 
+router.post(
+    "/logout",
+    authenticateUser,
+    logoutUser
+)
 
 export default router;

@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import authRoutes from "./modules/auth/auth.routes.js"
 import { errorHandler } from './middlewares/errorHandler.js';
+import ticketRoutes from "./modules/tickets/ticket.routes.js";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get("/health", (req, res) => {
 })
 
 app.use("/api/v1/auth", authRoutes);
+app.use("api/v1/tickets", ticketRoutes);
 
 app.use(errorHandler);
 

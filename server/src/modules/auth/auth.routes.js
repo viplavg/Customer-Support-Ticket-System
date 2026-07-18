@@ -26,18 +26,6 @@ router.get(
     getProfile
 )
 
-router.get(
-    "/admin-test",
-    authenticateUser,
-    authorizeRoles("ADMIN"),
-    (req, res) => {
-        res.json({
-            success: true,
-            message: "Welcome Admin"
-        })
-    }
-)
-
 router.patch(
     "/change-password",
     authenticateUser,

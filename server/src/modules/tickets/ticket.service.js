@@ -86,3 +86,15 @@ export const assignTicket = async({
   return ticket;
 
 }
+
+export const updateTicketStatus = async ({ticketId, status}) => {
+  const ticket = await Ticket.findById(ticketId);
+  if(!ticket) {
+    throw new ApiError(404, "Ticket not found");
+  }
+  ticket.status = status;
+  await ticket.save();
+
+  return ticket;
+
+}

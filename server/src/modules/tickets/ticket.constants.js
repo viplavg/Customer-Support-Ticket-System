@@ -8,4 +8,12 @@ export const CATEGORIES = [
     "GENERAL",
 ];
 
+export const TICKET_STATUS = [
+  "OPEN",
+  "IN_PROGRESS",
+  "WAITING_FOR_CUSTOMER",
+  "RESOLVED",
+  "CLOSED",
+];
+
 export const ACCESS_DENIED = "You are not authorized to view this ticket";

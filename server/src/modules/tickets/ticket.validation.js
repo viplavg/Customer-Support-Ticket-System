@@ -1,5 +1,5 @@
 import { body, param } from "express-validator";
-import { PRIORITIES, CATEGORIES } from "./ticket.constants.js";
+import { PRIORITIES, CATEGORIES, TICKET_STATUS } from "./ticket.constants.js";
 
 export const validateCreateTicket = [
     body("title")
@@ -27,4 +27,22 @@ export const validateTicketId = [
     param("id")
     .isMongoId()
     .withMessage("Invalid Ticket Id")
+];
+
+export const validateAssignTicket = [
+    body("agentId")
+    .notEmpty()
+    .withMessage("Agent ID is required")
+    .isMongoId()
+    .withMessage("Invalid agent ID"),
+];
+
+export const validateUpdateTicketStatus = [
+    body("status")
+    .trim()
+    .notEmpty()
+    .withMessage("Ticket status is required")
+    .isIn(TICKET_STATUS)
+    .withMessage("Invalid Status")
+
 ];

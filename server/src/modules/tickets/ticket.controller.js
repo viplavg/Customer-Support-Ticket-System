@@ -3,6 +3,7 @@ import { ApiResponse } from "../../utils/ApiResponse.js";
 import { createTicket as createTicketService } from "./ticket.service.js";
 import { getTickets as getTicketsService } from "./ticket.service.js";
 import { getTicketById as getTicketByIdService } from "./ticket.service.js";
+import { assignTicket as assignTicketService } from "./ticket.service.js";
 
 export const createTicket = asyncHandler(async (req, res) => {
     const {title, description, priority, category} = req.body;
@@ -34,4 +35,15 @@ export const getTicketById = asyncHandler(async (req, res) => {
     return res.status(200).json(
         new ApiResponse(ticket, "Ticket fetched successfully")
     )
+});
+
+export const assignTicket = asyncHandler(async (req, res) => {
+    const {id: ticketId} = req.params;
+    const {agentId} = req.body;
+
+    const ticket = await assignTicketService({ticketId, agentId});
+
+    return res.status(200).json(
+        new ApiResponse(ticket, "Ticket assigned successfully")
+    );
 });

@@ -1,5 +1,6 @@
 import Counter from "./counter.model.js";
 import Ticket from "./ticket.model.js";
+import User from "../../modules/users/user.model.js";
 import {ApiError} from "../../utils/ApiError.js";
 import { ACCESS_DENIED } from "./ticket.constants.js";
 
@@ -59,4 +60,29 @@ export const getTicketById = async ({ticketId, userId, role}) => {
     }
 
     return ticket;
+}
+
+export const assignTicket = async({
+  ticketId, agentId
+}) => {
+  const ticket = await Ticket.findById(ticketId);
+
+  if(!ticket) {
+    throw new ApiError(404, "Ticket not found");
+  }
+
+  const agent = await User.findById(agentId);
+
+  if(!agent) {
+    throw new ApiError(404, "Agent not found");
+  }
+
+  if(agent.role !== "AGENT") {
+    throw new ApiError(400, "Selected user is not an agent");
+  }
+
+  ticket.assignedTo = agentId;
+  await ticket.save();
+  return ticket;
+
 }

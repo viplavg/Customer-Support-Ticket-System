@@ -5,6 +5,7 @@ import { assignTicket, createTicket, getTicketById, getTickets, updateTicketStat
 import { validateAssignTicket, validateCreateTicket, validateTicketId, validateUpdateTicketStatus } from './ticket.validation.js';
 import { validateTicketMessage } from './ticketMessage.validation.js';
 import { addTicketMessage } from './ticketMessage.controller.js';
+import { getTicketHistory } from './ticketHistory.controller.js';
 
 const router = Router();
 
@@ -62,5 +63,14 @@ router
         addTicketMessage
     )
 
+router
+    .route("/:id/history")
+    .get(
+        authenticateUser,
+        authorizeRoles("CUSTOMER", "AGENT", "ADMIN"),
+        validateTicketId,
+        validateRequest,
+        getTicketHistory
+    )
 
 export default router;

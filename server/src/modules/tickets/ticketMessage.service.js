@@ -1,4 +1,6 @@
+import { ApiError } from "../../utils/ApiError.js";
 import Ticket from "./ticket.model.js";
+import { validateTicketAccess } from "./ticketAccess.helper.js";
 import TicketMessage from "./ticketMessage.model.js";
 
 export const addTicketMessage = async ({
@@ -28,4 +30,20 @@ export const addTicketMessage = async ({
   });
 
   return ticketMessage;
+};
+
+export const getTicketMessages = async ({ ticketId, userId, role }) => {
+  const ticket = await Ticket.findById(ticketId);
+
+  if (!ticket) {
+    throw new ApiError(404, "Ticket not found");
+  }
+
+  validateTicketAccess({ticket, userId, role});
+
+  const messages = await TicketMessage.find({ ticket: ticketId })
+    .populate("sender", "name email role")
+    .sort({ createdAt: 1 });
+
+  return messages;
 };

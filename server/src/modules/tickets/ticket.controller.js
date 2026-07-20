@@ -41,9 +41,10 @@ export const getTicketById = asyncHandler(async (req, res) => {
 
 export const assignTicket = asyncHandler(async (req, res) => {
     const {id: ticketId} = req.params;
+    const {id: assignedBy} = req.user;
     const {agentId} = req.body;
 
-    const ticket = await assignTicketService({ticketId, agentId});
+    const ticket = await assignTicketService({ticketId, agentId, assignedBy});
 
     return res.status(200).json(
         new ApiResponse(ticket, "Ticket assigned successfully")
@@ -52,9 +53,10 @@ export const assignTicket = asyncHandler(async (req, res) => {
 
 export const updateTicketStatus = asyncHandler(async (req, res) => {
     const { id: ticketId } = req.params;
+    const { id: updatedBy } = req.user;
     const {status} = req.body;
 
-    const ticket = await updateTicketStatusService({ticketId, status});
+    const ticket = await updateTicketStatusService({ticketId, status, updatedBy});
 
     return res.status(200).json(
         new ApiResponse(ticket, "Ticket status updated successfully")

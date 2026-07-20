@@ -2,7 +2,8 @@ import Counter from "./counter.model.js";
 import Ticket from "./ticket.model.js";
 import User from "../../modules/users/user.model.js";
 import {ApiError} from "../../utils/ApiError.js";
-import { ACCESS_DENIED } from "./ticket.constants.js";
+import { ACCESS_DENIED, TICKET_HISTORY_ACTIONS } from "./ticket.constants.js";
+import { createTicketHistory } from "./ticketHistory.service.js";
 
 export const getNextTicketNumber = async () => {
   const counter = await Counter.findOneAndUpdate(
@@ -26,6 +27,16 @@ export const createTicket = async ({title, description, priority, category, crea
         category,
         createdBy
     });
+    await createTicketHistory({
+      ticket: ticket._id,
+      performedBy: createdBy,
+      action: TICKET_HISTORY_ACTIONS.TICKET_CREATED,
+      fromValue: null,
+      toValue: null,
+      metadata: {
+        ticketNumber: ticket.ticketNumber,
+      }
+    })
     return ticket;
 }
 
@@ -63,7 +74,7 @@ export const getTicketById = async ({ticketId, userId, role}) => {
 }
 
 export const assignTicket = async({
-  ticketId, agentId
+  ticketId, agentId, assignedBy
 }) => {
   const ticket = await Ticket.findById(ticketId);
 
@@ -81,20 +92,50 @@ export const assignTicket = async({
     throw new ApiError(400, "Selected user is not an agent");
   }
 
+  if (ticket.assignedTo?.equals(agentId)) {
+    throw new ApiError(400, "Ticket is already assigned to this agent");
+  }
+
+  const previousAgent = ticket.assignedTo;
   ticket.assignedTo = agentId;
   await ticket.save();
+
+  await createTicketHistory({
+    ticket: ticket._id,
+    performedBy: assignedBy,
+    action: TICKET_HISTORY_ACTIONS.TICKET_ASSIGNED,
+    fromValue: previousAgent ? previousAgent.toString() : null,
+    toValue: agentId.toString(),
+    metadata: {
+      assignedAgentName: agent.name,
+    },
+  });
+
   return ticket;
 
 }
 
-export const updateTicketStatus = async ({ticketId, status}) => {
+export const updateTicketStatus = async ({ticketId, status, updatedBy}) => {
   const ticket = await Ticket.findById(ticketId);
   if(!ticket) {
     throw new ApiError(404, "Ticket not found");
   }
+
+  if (ticket.status === status) {
+    throw new ApiError(400, "Ticket is already in the requested status");
+  }
+
+  const previousStatus = ticket.status;
   ticket.status = status;
   await ticket.save();
 
-  return ticket;
+  await createTicketHistory({
+    ticket: ticket._id,
+    performedBy: updatedBy,
+    action: TICKET_HISTORY_ACTIONS.STATUS_CHANGED,
+    fromValue: previousStatus,
+    toValue: status,
+  });
 
+  return ticket;
 }

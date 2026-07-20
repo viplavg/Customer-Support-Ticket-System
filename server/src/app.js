@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import authRoutes from "./modules/auth/auth.routes.js"
 import { errorHandler } from './middlewares/errorHandler.js';
 import ticketRoutes from "./modules/tickets/ticket.routes.js";
+import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.get("/health", (req, res) => {
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/tickets", ticketRoutes);
+app.use("/api/v1/dashboard", dashboardRoutes);
 
 app.use(errorHandler);
 

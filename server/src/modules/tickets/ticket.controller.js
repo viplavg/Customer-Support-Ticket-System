@@ -22,7 +22,9 @@ export const getTickets = asyncHandler(async (req, res) => {
     const { id: userId, role } = req.user;
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
-    const tickets = await getTicketsService({userId, role, page, limit});
+    const sortBy = req.query.sortBy || "createdAt";
+    const order = req.query.order || "desc";
+    const tickets = await getTicketsService({userId, role, page, limit, sortBy, order});
     return res.status(200).json(
         new ApiResponse(tickets, "Tickets fetched successfully")
     )

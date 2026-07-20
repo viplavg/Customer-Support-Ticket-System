@@ -40,7 +40,7 @@ export const createTicket = async ({title, description, priority, category, crea
     return ticket;
 }
 
-export const getTickets = async({userId, role, page, limit}) => {
+export const getTickets = async({userId, role, page, limit, sortBy, order}) => {
   let query = {};
   const skip = (page-1) * limit;
   if(role === "CUSTOMER") {
@@ -50,8 +50,14 @@ export const getTickets = async({userId, role, page, limit}) => {
   }
   const totalRecords = await Ticket.countDocuments(query);
   const totalPages = Math.ceil(totalRecords / limit);
+  const sortOrder = order === "desc" ? -1 : 1;
   const tickets = await Ticket.find(query)
-  .skip(skip).limit(limit);
+  .sort({
+    [sortBy]: sortOrder,
+  })
+  .skip(skip)
+  .limit(limit);
+
   return {
     tickets,
     pagination: {

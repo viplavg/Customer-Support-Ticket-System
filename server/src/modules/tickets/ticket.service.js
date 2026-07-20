@@ -40,15 +40,27 @@ export const createTicket = async ({title, description, priority, category, crea
     return ticket;
 }
 
-export const getTickets = async({userId, role}) => {
+export const getTickets = async({userId, role, page, limit}) => {
   let query = {};
+  const skip = (page-1) * limit;
   if(role === "CUSTOMER") {
     query.createdBy = userId;
   } else if(role === "AGENT") {
     query.assignedTo = userId;
   }
-  const tickets = await Ticket.find(query);
-  return tickets;
+  const totalRecords = await Ticket.countDocuments(query);
+  const totalPages = Math.ceil(totalRecords / limit);
+  const tickets = await Ticket.find(query)
+  .skip(skip).limit(limit);
+  return {
+    tickets,
+    pagination: {
+      page,
+      limit,
+      totalRecords,
+      totalPages,
+    }
+  };
 }
 
 export const getTicketById = async ({ticketId, userId, role}) => {

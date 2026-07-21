@@ -24,4 +24,16 @@ export const TICKET_HISTORY_ACTIONS = {
   TICKET_REOPENED: "TICKET_REOPENED",
 };
 
+export const ALLOWED_TICKET_SORT_FIELDS = [
+  "createdAt",
+  "updatedAt",
+  "priority",
+  "status",
+];
+
+export const ALLOWED_TICKET_SORT_ORDER = [
+  "asc",
+  "desc"
+];
+
 export const ACCESS_DENIED = "You are not authorized to view this ticket";

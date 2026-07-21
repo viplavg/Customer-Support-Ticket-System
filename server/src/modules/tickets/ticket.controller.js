@@ -1,11 +1,12 @@
 import { asyncHandler } from "../../middlewares/asyncHandler.js";
+import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
+import { ALLOWED_TICKET_SORT_FIELDS, ALLOWED_TICKET_SORT_ORDER } from "./ticket.constants.js";
 import { createTicket as createTicketService } from "./ticket.service.js";
 import { getTickets as getTicketsService } from "./ticket.service.js";
 import { getTicketById as getTicketByIdService } from "./ticket.service.js";
 import { assignTicket as assignTicketService } from "./ticket.service.js";
 import { updateTicketStatus as updateTicketStatusService } from "./ticket.service.js";
-
 
 export const createTicket = asyncHandler(async (req, res) => {
     const {title, description, priority, category} = req.body;
@@ -22,8 +23,23 @@ export const getTickets = asyncHandler(async (req, res) => {
     const { id: userId, role } = req.user;
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
+
+    if(page < 1 || limit < 1 || limit > 50) {
+        throw new ApiError(400, "Invalid pagination parameters");
+    }
+
     const sortBy = req.query.sortBy || "createdAt";
-    const order = req.query.order || "desc";
+
+    if(!ALLOWED_TICKET_SORT_FIELDS.includes(sortBy)) {
+        throw new ApiError(400, "Invalid sortBy parameter");
+    }
+
+    const order = (req.query.order || "desc".toLowerCase());
+
+    if(!ALLOWED_TICKET_SORT_ORDER.includes(order)){
+        throw new ApiError(400, "Order must be either 'asc' or 'desc'");
+    }
+
     const { status, priority, category } = req.query;
     const search = req.query.search || "";
     const tickets = await getTicketsService({

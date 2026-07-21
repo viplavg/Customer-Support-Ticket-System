@@ -7,6 +7,7 @@ import { getTickets as getTicketsService } from "./ticket.service.js";
 import { getTicketById as getTicketByIdService } from "./ticket.service.js";
 import { assignTicket as assignTicketService } from "./ticket.service.js";
 import { updateTicketStatus as updateTicketStatusService } from "./ticket.service.js";
+import { deleteTicket as deleteTicketService } from "./ticket.service.js";
 
 export const createTicket = asyncHandler(async (req, res) => {
     const {title, description, priority, category} = req.body;
@@ -84,5 +85,16 @@ export const updateTicketStatus = asyncHandler(async (req, res) => {
 
     return res.status(200).json(
         new ApiResponse(ticket, "Ticket status updated successfully")
+    );
+});
+
+export const deleteTicket = asyncHandler(async (req, res) => {
+    const { id: ticketId } = req.params;
+    const { id: userId, role } = req.user;
+    const deletedTicket = await deleteTicketService({
+        ticketId, userId, role
+    });
+    return res.status(200).json(
+        new ApiResponse(deletedTicket, "Ticket deleted successfully")
     );
 });

@@ -1,3 +1,5 @@
+import { ApiError } from "../../utils/ApiError.js";
+
 export const validateTicketAccess = ({
   ticket,
   userId,

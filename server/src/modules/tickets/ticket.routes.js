@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import { authenticateUser, authorizeRoles } from '../../middlewares/auth.middleware.js';
 import { validateRequest } from '../../middlewares/validateRequest.js';
-import { assignTicket, createTicket, getTicketById, getTickets, updateTicketStatus } from './ticket.controller.js';
+import { assignTicket, createTicket, deleteTicket, getTicketById, getTickets, updateTicketStatus } from './ticket.controller.js';
 import { validateAssignTicket, validateCreateTicket, validateTicketId, validateUpdateTicketStatus } from './ticket.validation.js';
 import { validateTicketMessage } from './ticketMessage.validation.js';
 import { addTicketMessage } from './ticketMessage.controller.js';
@@ -29,6 +29,12 @@ router
         validateTicketId,
         validateRequest,
         getTicketById
+    )
+    .delete(
+        authenticateUser,
+        validateTicketId,
+        validateRequest,
+        deleteTicket
     )
 
 router

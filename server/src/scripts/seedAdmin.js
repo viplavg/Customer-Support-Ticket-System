@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 
 import connectDB from "../config/db.js";
 import User from "../modules/users/user.model.js";
+import { USER_ROLES } from "../modules/tickets/ticket.constants.js";
 
 dotenv.config();
 
@@ -21,7 +22,7 @@ const seedAdmin = async () => {
       name: process.env.ADMIN_NAME,
       email: process.env.ADMIN_EMAIL,
       password: process.env.ADMIN_PASSWORD,
-      role: "ADMIN",
+      role: USER_ROLES.ADMIN,
     });
     await newAdmin.save();
     console.log("Admin created successfully");

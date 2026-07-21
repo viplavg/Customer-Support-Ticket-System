@@ -2,6 +2,7 @@ import User from "../users/user.model.js";
 import { asyncHandler } from "../../middlewares/asyncHandler.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
+import { USER_ROLES } from "../tickets/ticket.constants.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
@@ -16,7 +17,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     name,
     email,
     password,
-    role: "CUSTOMER",
+    role: USER_ROLES.CUSTOMER,
   });
   await newUser.save();
 

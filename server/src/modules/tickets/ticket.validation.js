@@ -1,5 +1,5 @@
 import { body, param } from "express-validator";
-import { PRIORITIES, CATEGORIES, TICKET_STATUS } from "./ticket.constants.js";
+import { PRIORITIES, CATEGORIES, TICKET_STATUS_VALUES } from "./ticket.constants.js";
 
 export const validateCreateTicket = [
     body("title")
@@ -42,7 +42,7 @@ export const validateUpdateTicketStatus = [
     .trim()
     .notEmpty()
     .withMessage("Ticket status is required")
-    .isIn(TICKET_STATUS)
+    .isIn(TICKET_STATUS_VALUES)
     .withMessage("Invalid Status")
 
 ];

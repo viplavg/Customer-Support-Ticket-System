@@ -1,16 +1,17 @@
 import mongoose from "mongoose";
 import { ApiError } from "../../utils/ApiError.js";
 import Ticket from "../tickets/ticket.model.js";
+import { USER_ROLES, TICKET_STATUS_VALUES } from "../tickets/ticket.constants.js";
 
 export const getDashboard = async ({ userId, role }) => {
   switch (role) {
-    case "CUSTOMER":
+    case USER_ROLES.CUSTOMER:
       return await getCustomerDashboard({ userId });
 
-    case "AGENT":
+    case USER_ROLES.AGENT:
       return await getAgentDashboard({ userId });
 
-    case "ADMIN":
+    case USER_ROLES.ADMIN:
       return await getAdminDashboard();
 
     default:
@@ -33,27 +34,27 @@ const getCustomerDashboard = async ({ userId }) => {
         },
         openTickets: {
           $sum: {
-            $cond: [{ $eq: ["$status", "OPEN"] }, 1, 0],
+            $cond: [{ $eq: ["$status", TICKET_STATUS_VALUES.OPEN] }, 1, 0],
           },
         },
         inProgressTickets: {
           $sum: {
-            $cond: [{ $eq: ["$status", "IN_PROGRESS"] }, 1, 0],
+            $cond: [{ $eq: ["$status", TICKET_STATUS_VALUES.IN_PROGRESS] }, 1, 0],
           },
         },
         waitingForCustomerTickets: {
           $sum: {
-            $cond: [{ $eq: ["$status", "WAITING_FOR_CUSTOMER"] }, 1, 0],
+            $cond: [{ $eq: ["$status", TICKET_STATUS_VALUES.WAITING_FOR_CUSTOMER] }, 1, 0],
           },
         },
         resolvedTickets: {
           $sum: {
-            $cond: [{ $eq: ["$status", "RESOLVED"] }, 1, 0],
+            $cond: [{ $eq: ["$status", TICKET_STATUS_VALUES.RESOLVED] }, 1, 0],
           },
         },
         closedTickets: {
           $sum: {
-            $cond: [{ $eq: ["$status", "CLOSED"] }, 1, 0],
+            $cond: [{ $eq: ["$status", TICKET_STATUS_VALUES.CLOSED] }, 1, 0],
           },
         },
       },
@@ -98,27 +99,27 @@ const getAgentDashboard = async ({ userId }) => {
         },
         openTickets: {
           $sum: {
-            $cond: [{ $eq: ["$status", "OPEN"] }, 1, 0],
+            $cond: [{ $eq: ["$status", TICKET_STATUS_VALUES.OPEN] }, 1, 0],
           },
         },
         inProgressTickets: {
           $sum: {
-            $cond: [{ $eq: ["$status", "IN_PROGRESS"] }, 1, 0],
+            $cond: [{ $eq: ["$status", TICKET_STATUS_VALUES.IN_PROGRESS] }, 1, 0],
           },
         },
         waitingForCustomerTickets: {
           $sum: {
-            $cond: [{ $eq: ["$status", "WAITING_FOR_CUSTOMER"] }, 1, 0],
+            $cond: [{ $eq: ["$status", TICKET_STATUS_VALUES.WAITING_FOR_CUSTOMER] }, 1, 0],
           },
         },
         resolvedTickets: {
           $sum: {
-            $cond: [{ $eq: ["$status", "RESOLVED"] }, 1, 0],
+            $cond: [{ $eq: ["$status", TICKET_STATUS_VALUES.RESOLVED] }, 1, 0],
           },
         },
         closedTickets: {
           $sum: {
-            $cond: [{ $eq: ["$status", "CLOSED"] }, 1, 0],
+            $cond: [{ $eq: ["$status", TICKET_STATUS_VALUES.CLOSED] }, 1, 0],
           },
         },
       },
@@ -157,20 +158,20 @@ const getAdminDashboard = async () => {
 
         openTickets: {
           $sum: {
-            $cond: [{ $eq: ["$status", "OPEN"] }, 1, 0],
+            $cond: [{ $eq: ["$status", TICKET_STATUS_VALUES.OPEN] }, 1, 0],
           },
         },
 
         inProgressTickets: {
           $sum: {
-            $cond: [{ $eq: ["$status", "IN_PROGRESS"] }, 1, 0],
+            $cond: [{ $eq: ["$status", TICKET_STATUS_VALUES.IN_PROGRESS] }, 1, 0],
           },
         },
 
         waitingForCustomerTickets: {
           $sum: {
             $cond: [
-              { $eq: ["$status", "WAITING_FOR_CUSTOMER"] },
+              { $eq: ["$status", TICKET_STATUS_VALUES.WAITING_FOR_CUSTOMER] },
               1,
               0,
             ],
@@ -179,13 +180,13 @@ const getAdminDashboard = async () => {
 
         resolvedTickets: {
           $sum: {
-            $cond: [{ $eq: ["$status", "RESOLVED"] }, 1, 0],
+            $cond: [{ $eq: ["$status", TICKET_STATUS_VALUES.RESOLVED] }, 1, 0],
           },
         },
 
         closedTickets: {
           $sum: {
-            $cond: [{ $eq: ["$status", "CLOSED"] }, 1, 0],
+            $cond: [{ $eq: ["$status", TICKET_STATUS_VALUES.CLOSED] }, 1, 0],
           },
         },
       },

@@ -1,6 +1,8 @@
+import { ERROR_MESSAGES } from "./ticket.constants.js";
 import Ticket from "./ticket.model.js";
 import { validateTicketAccess } from "./ticketAccess.helper.js";
 import TicketHistory from "./ticketHistory.model.js";
+
 
 export const createTicketHistory = async ({
     ticket, performedBy, action, fromValue = null, toValue = null, metadata = {}
@@ -13,10 +15,13 @@ export const createTicketHistory = async ({
 }
 
 export const getTicketHistory = async ({ ticketId, userId, role }) => {
-  const ticket = await Ticket.findById(ticketId);
+  const ticket = await Ticket.findOne({
+    _id: ticketId,
+    isDeleted: false,
+  });
 
   if (!ticket) {
-    throw new ApiError(404, "Ticket not found");
+    throw new ApiError(404, ERROR_MESSAGES.TICKET_NOT_FOUND);
   }
 
   validateTicketAccess({ticket, userId, role});

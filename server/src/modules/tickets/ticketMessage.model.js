@@ -16,7 +16,7 @@ const ticketMessageSchema = new Schema({
         required: true,
         trim: true,
     },
-}, {timestamps: true});
+}, {timestamps: true, versionKey: false});
 
 const TicketMessage = mongoose.model("TicketMessage", ticketMessageSchema);
 

@@ -1,4 +1,5 @@
 import mongoose, {Schema} from "mongoose";
+import { TICKET_STATUS_VALUES, PRIORITIES, CATEGORIES } from "./ticket.constants.js";
 
 const ticketSchema = new Schema({
     ticketNumber: {
@@ -23,29 +24,17 @@ const ticketSchema = new Schema({
     },
     status: {
         type: String,
-        enum: [
-            "OPEN",
-            "IN_PROGRESS",
-            "WAITING_FOR_CUSTOMER",
-            "RESOLVED",
-            "CLOSED",
-        ],
-        default: "OPEN"
+        enum: Object.values(TICKET_STATUS_VALUES),
+        default: TICKET_STATUS_VALUES.OPEN
     },
     priority: {
         type: String,
-        enum: ["LOW", "MEDIUM", "HIGH", "URGENT"],
-        default: "MEDIUM",
+        enum: Object.values(PRIORITIES),
+        default: PRIORITIES.MEDIUM,
     },
     category: {
         type: String,
-        enum: [
-            "TECHNICAL",
-            "ACCOUNT",
-            "BILLING",
-            "FEATURE_REQUEST",
-            "GENERAL"
-        ],
+        enum: Object.values(CATEGORIES),
         required: true,
     },
     createdBy: {
@@ -65,8 +54,28 @@ const ticketSchema = new Schema({
 },
 {
     timestamps: true,
+    versionKey: false,
 }
 );
+
+ticketSchema.index({
+  createdBy: 1,
+  isDeleted: 1,
+  createdAt: -1,
+});
+
+ticketSchema.index({
+  assignedTo: 1,
+  isDeleted: 1,
+  createdAt: -1,
+});
+
+ticketSchema.index({
+  isDeleted: 1,
+  status: 1,
+  priority: 1,
+  createdAt: -1,
+});
 
 const Ticket = mongoose.model("Ticket", ticketSchema);
 

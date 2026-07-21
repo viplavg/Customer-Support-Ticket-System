@@ -38,6 +38,7 @@ const ticketHistorySchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    versionKey: false,
   },
 );
 

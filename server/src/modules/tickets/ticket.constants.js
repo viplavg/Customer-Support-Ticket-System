@@ -1,20 +1,31 @@
-export const PRIORITIES = ["LOW", "MEDIUM", "HIGH", "URGENT"];
+export const USER_ROLES = {
+  CUSTOMER: "CUSTOMER",
+  AGENT: "AGENT",
+  ADMIN: "ADMIN",
+};
 
-export const CATEGORIES = [
-    "TECHNICAL",
-    "ACCOUNT",
-    "BILLING",
-    "FEATURE_REQUEST",
-    "GENERAL",
-];
+export const PRIORITIES = {
+  LOW: "LOW",
+  MEDIUM: "MEDIUM",
+  HIGH: "HIGH",
+  URGENT: "URGENT"
+};
 
-export const TICKET_STATUS = [
-  "OPEN",
-  "IN_PROGRESS",
-  "WAITING_FOR_CUSTOMER",
-  "RESOLVED",
-  "CLOSED",
-];
+export const CATEGORIES = {
+    TECHNICAL: "TECHNICAL",
+    ACCOUNT: "ACCOUNT",
+    BILLING: "BILLING",
+    FEATURE_REQUEST: "FEATURE_REQUEST",
+    GENERAL: "GENERAL",
+};
+
+export const TICKET_STATUS_VALUES = {
+  OPEN: "OPEN",
+  IN_PROGRESS: "IN_PROGRESS",
+  WAITING_FOR_CUSTOMER: "WAITING_FOR_CUSTOMER",
+  RESOLVED: "RESOLVED",
+  CLOSED: "CLOSED",
+};
 
 export const TICKET_HISTORY_ACTIONS = {
   TICKET_CREATED: "TICKET_CREATED",
@@ -36,4 +47,7 @@ export const ALLOWED_TICKET_SORT_ORDER = [
   "desc"
 ];
 
-export const ACCESS_DENIED = "You are not authorized to view this ticket";
+export const ERROR_MESSAGES = {
+  ACCESS_DENIED: "You are not authorized to view this ticket",
+  TICKET_NOT_FOUND: "Ticket not found"
+};

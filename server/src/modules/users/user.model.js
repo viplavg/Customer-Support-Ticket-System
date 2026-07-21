@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { USER_ROLES } from "../tickets/ticket.constants.js";
 
 const userSchema = new Schema({
   name: {
@@ -22,10 +23,10 @@ const userSchema = new Schema({
   },
   role: {
     type: String,
-    enum: ["CUSTOMER", "AGENT", "ADMIN"],
-    default: "CUSTOMER",
+    enum: Object.values(USER_ROLES),
+    default: USER_ROLES.CUSTOMER,
   },
-},{timestamps: true});
+},{timestamps: true, versionKey: false});
 
 userSchema.pre("save", async function() {
     try {

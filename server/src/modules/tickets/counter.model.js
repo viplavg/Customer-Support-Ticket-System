@@ -11,7 +11,7 @@ const counterSchema = new Schema({
         default: 0,
     },
 },
-{timestamps: true}
+{timestamps: true, versionKey: false}
 );
 
 const Counter = mongoose.model("Counter", counterSchema);

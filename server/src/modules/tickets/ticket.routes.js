@@ -6,6 +6,7 @@ import { validateAssignTicket, validateCreateTicket, validateTicketId, validateU
 import { validateTicketMessage } from './ticketMessage.validation.js';
 import { addTicketMessage } from './ticketMessage.controller.js';
 import { getTicketHistory } from './ticketHistory.controller.js';
+import { USER_ROLES } from './ticket.constants.js';
 
 const router = Router();
 
@@ -41,7 +42,7 @@ router
     .route("/:id/assign")
     .patch(
         authenticateUser,
-        authorizeRoles("ADMIN"),
+        authorizeRoles(USER_ROLES.ADMIN),
         validateTicketId,
         validateAssignTicket,
         validateRequest,
@@ -52,7 +53,7 @@ router
     .route("/:id/status")
     .patch(
         authenticateUser,
-        authorizeRoles("ADMIN", "AGENT"),
+        authorizeRoles(USER_ROLES.ADMIN, USER_ROLES.AGENT),
         validateTicketId,
         validateUpdateTicketStatus,
         validateRequest,
@@ -62,7 +63,7 @@ router
     .route("/:id/messages")
     .post(
         authenticateUser,
-        authorizeRoles("CUSTOMER", "AGENT", "ADMIN"),
+        authorizeRoles(USER_ROLES.CUSTOMER, USER_ROLES.AGENT, USER_ROLES.ADMIN),
         validateTicketId,
         validateTicketMessage,
         validateRequest,
@@ -73,7 +74,7 @@ router
     .route("/:id/history")
     .get(
         authenticateUser,
-        authorizeRoles("CUSTOMER", "AGENT", "ADMIN"),
+        authorizeRoles(USER_ROLES.CUSTOMER, USER_ROLES.AGENT, USER_ROLES.ADMIN),
         validateTicketId,
         validateRequest,
         getTicketHistory
@@ -84,7 +85,7 @@ router
     .route("/:id/reopen")
     .patch(
         authenticateUser,
-        authorizeRoles("CUSTOMER", "AGENT", "ADMIN"),
+        authorizeRoles(USER_ROLES.CUSTOMER, USER_ROLES.AGENT, USER_ROLES.ADMIN),
         validateTicketId,
         validateRequest,
         reopenTicket
@@ -94,7 +95,7 @@ router
     .route("/:id/close")
     .patch(
         authenticateUser,
-        authorizeRoles("AGENT", "ADMIN"),
+        authorizeRoles(USER_ROLES.AGENT, USER_ROLES.ADMIN),
         validateTicketId,
         validateRequest,
         closeTicket

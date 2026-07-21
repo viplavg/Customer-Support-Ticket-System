@@ -9,6 +9,7 @@ import { assignTicket as assignTicketService } from "./ticket.service.js";
 import { updateTicketStatus as updateTicketStatusService } from "./ticket.service.js";
 import { deleteTicket as deleteTicketService } from "./ticket.service.js";
 import { reopenTicket as reopenTicketService } from "./ticket.service.js";
+import { closeTicket as closeTicketService } from "./ticket.service.js";
 
 export const createTicket = asyncHandler(async (req, res) => {
     const {title, description, priority, category} = req.body;
@@ -111,4 +112,17 @@ export const reopenTicket = asyncHandler(async (req, res) => {
     return res.status(200).json(
         new ApiResponse(reopenedTicket, "Ticket reopened successfully")
     )
+});
+
+export const closeTicket = asyncHandler(async (req, res) => {
+    const { id: ticketId } = req.params;
+    const {id:userId, role} = req.user;
+
+    const closedTicket = await closeTicketService({
+        ticketId, userId, role,
+    });
+
+    return res.status(200).json(
+        new ApiResponse(closedTicket, "Ticket closed successfully")
+    );
 });

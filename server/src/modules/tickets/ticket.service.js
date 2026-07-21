@@ -102,7 +102,6 @@ export const getTickets = async ({
 
   console.log(query);
 
-
   const totalRecords = await Ticket.countDocuments(query);
   const totalPages = Math.ceil(totalRecords / limit);
   const sortOrder = order === "desc" ? -1 : 1;
@@ -125,7 +124,6 @@ export const getTickets = async ({
 };
 
 export const getTicketById = async ({ ticketId, userId, role }) => {
-  
   const ticket = await Ticket.findOne({
     _id: ticketId,
     isDeleted: false,
@@ -195,7 +193,7 @@ export const assignTicket = async ({ ticketId, agentId, assignedBy }) => {
 export const updateTicketStatus = async ({ ticketId, status, updatedBy }) => {
   const ticket = await Ticket.findOne({
     _id: ticketId,
-    isDeleted: false
+    isDeleted: false,
   });
   if (!ticket) {
     throw new ApiError(404, "Ticket not found");
@@ -235,29 +233,26 @@ export const deleteTicket = async ({ ticketId, userId, role }) => {
   return ticket;
 };
 
-export const reopenTicket = async ({
-  ticketId, userId, role
-}) => {
-  
+export const reopenTicket = async ({ ticketId, userId, role }) => {
   const ticket = await Ticket.findOne({
     _id: ticketId,
     isDeleted: false,
   });
 
-  if(!ticket) {
-    throw new ApiError(404, "Ticket not found")
+  if (!ticket) {
+    throw new ApiError(404, "Ticket not found");
   }
 
-  validateTicketAccess({ticket, userId, role});
+  validateTicketAccess({ ticket, userId, role });
 
-  if(ticket.status !== "RESOLVED" && ticket.status !== "CLOSED") {
+  if (ticket.status !== "RESOLVED" && ticket.status !== "CLOSED") {
     throw new ApiError(400, "Only resolved or closed tickets can be reopened");
   }
 
   const previousStatus = ticket.status;
   ticket.status = "OPEN";
   await ticket.save();
-  
+
   await createTicketHistory({
     ticket: ticket._id,
     performedBy: userId,
@@ -267,5 +262,33 @@ export const reopenTicket = async ({
   });
 
   return ticket;
+};
 
-}
+export const closeTicket = async ({ ticketId, userId, role }) => {
+  const ticket = await Ticket.findOne({
+    _id: ticketId,
+    isDeleted: false,
+  });
+
+  if (!ticket) {
+    throw new ApiError(404, "Ticket not found");
+  }
+
+  validateTicketAccess({ ticket, userId, role });
+
+  if (ticket.status !== "RESOLVED") {
+    throw new ApiError(400, "Only resolved tickets can be closed");
+  }
+  const previousStatus = ticket.status;
+  ticket.status = "CLOSED";
+  await ticket.save();
+
+  await createTicketHistory({
+    ticket: ticket._id,
+    performedBy: userId,
+    action: TICKET_HISTORY_ACTIONS.STATUS_CHANGED,
+    fromValue: previousStatus,
+    toValue: ticket.status,
+  });
+  return ticket;
+};

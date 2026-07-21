@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import { authenticateUser, authorizeRoles } from '../../middlewares/auth.middleware.js';
 import { validateRequest } from '../../middlewares/validateRequest.js';
-import { assignTicket, createTicket, deleteTicket, getTicketById, getTickets, reopenTicket, updateTicketStatus } from './ticket.controller.js';
+import { assignTicket, closeTicket, createTicket, deleteTicket, getTicketById, getTickets, reopenTicket, updateTicketStatus } from './ticket.controller.js';
 import { validateAssignTicket, validateCreateTicket, validateTicketId, validateUpdateTicketStatus } from './ticket.validation.js';
 import { validateTicketMessage } from './ticketMessage.validation.js';
 import { addTicketMessage } from './ticketMessage.controller.js';
@@ -90,6 +90,14 @@ router
         reopenTicket
     )
 
-
+router
+    .route("/:id/close")
+    .patch(
+        authenticateUser,
+        authorizeRoles("AGENT", "ADMIN"),
+        validateTicketId,
+        validateRequest,
+        closeTicket
+    )
 
 export default router;
